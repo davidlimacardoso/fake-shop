@@ -45,6 +45,8 @@ jobs:
 
 
       - name: Configurar o kubectl
-        run: echo "Executando o comando aws eks update-kubeconfig"
+        run: aws eks update-kubeconfig --name ${{ vars.AWS_EKS_CLUSTER }}
+
+        
       - name: Deploy dos manifestos no Kubernets
         run: echo "Executando o comando kubectl apply"

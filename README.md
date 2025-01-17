@@ -111,6 +111,18 @@ aws iam attach-role-policy \
 
 Vá em EKS > Clusters > SEU_CLUSTER > IAM access entries > Create Access Entry. Em IAM principal  selecione a Role `GitHubActionsEKSRole` > Avançar > Selecione a policy `AmazonEKSAdminPolicy` e define em qual namespace (default) > Create.
 
+## Prometheus
+
+## Grafana 
+
+1. Exibir a secret password do Grafana:
+```bash
+kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
+```
+
+2. Importar o Dashboard no diretório `./prometheus/dashboard.json`
+
+
 ## Referências
 
 http://imersao.devopspro.com.br

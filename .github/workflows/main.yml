@@ -13,10 +13,6 @@ jobs:
         fetch-depth: 0
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v4.2.1
-      with:
-        args: >
-          -Dsonar.organization=DevOpsLabs
-          -Dsonar.projectKey=fake-shop-web
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ vars.SONAR_HOST_URL }}

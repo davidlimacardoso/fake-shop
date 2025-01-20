@@ -5,7 +5,7 @@ on:
   workflow_dispatch:
 
 jobs:
-  Se:
+  Security_Analizy:
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v4
@@ -14,7 +14,7 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v4
 
-    - name: SonarQube Scan
+    - name: Scaneando código com SonarQube
       uses: SonarSource/sonarqube-scan-action@v4.2.1
       with:
         args: >
@@ -23,13 +23,10 @@ jobs:
       env:
         SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
         SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-    - name: Test SonarQube connectivity
-      run: curl -v ${{ secrets.SONAR_HOST_URL }}
 
-
-  ci:
+  CI:
     runs-on: ubuntu-latest
-    needs: [ sonarqube ]
+    needs: [ Security_Analizy ]
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4.2.2
@@ -49,9 +46,10 @@ jobs:
           tags: |
             davidlimacd/fake-shop:v${{ github.run_number }}
             davidlimacd/fake-shop:latest
-  cd:
+  
+  CD:
     runs-on: ubuntu-latest
-    needs: [ ci ]
+    needs: [ CI ]
     permissions:
       id-token: write
       contents: read

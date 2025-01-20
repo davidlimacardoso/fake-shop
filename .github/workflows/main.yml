@@ -14,7 +14,6 @@ jobs:
     - name: SonarQube Scan
       uses: SonarSource/sonarqube-scan-action@v4.2.1
       with:
-        projectBaseDir: .
         args: >
           -Dsonar.organization=DevOpsLabs
           -Dsonar.projectKey=fake-shop-web
@@ -24,6 +23,7 @@ jobs:
 
   ci:
     runs-on: ubuntu-latest
+    needs: [ sonarqube ]
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4.2.2

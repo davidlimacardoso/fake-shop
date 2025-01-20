@@ -10,6 +10,14 @@ jobs:
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4.2.2
+
+      - name: SonarQube Scan
+        uses: sonarsource/sonarqube-scan-action@master
+        with:
+          projectBaseDir: .
+          args: >
+            -Dsonar.organization=DevOpsLabs
+            -Dsonar.projectKey=fake-shop-web
         
       - name: Autenticar no Docker Hub
         uses: docker/login-action@v3

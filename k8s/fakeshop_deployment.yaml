@@ -1,0 +1,91 @@
+# Deployment of Postgres DB
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgre
+spec:
+  selector:
+    matchLabels:
+      app: postgre
+  template:
+    metadata:
+      labels:
+        app: postgre
+    spec:
+      containers:
+      - name: postgre
+        image: postgres:13.16
+        ports:
+        - name: postgres-port
+          containerPort: 5432
+        env:
+          - name: POSTGRES_DB
+            value: fakeshop
+          - name: POSTGRES_USER
+            value: fakeshop
+          - name: POSTGRES_PASSWORD
+            value: Pg1234
+---
+# Deployment Postgres Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgre
+spec:
+  selector:
+    app: postgre
+  ports:
+    - protocol: TCP
+      port: 5432
+      targetPort: postgres-port
+---
+# Deployment Fakeshop Web
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fakeshop
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: fakeshop
+  template:
+    metadata:
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/port: "5000"
+        prometheus.io/path: "/metrics"
+      labels:
+        app: fakeshop
+    spec:
+      containers:
+      - name: fakeshop
+        image: davidlimacd/fake-shop:v1
+        ports:
+        - name: fake-shop-port
+          containerPort: 5000
+        env:
+          - name: DB_HOST
+            value: postgre
+          - name: DB_NAME
+            value: fakeshop
+          - name: DB_USER
+            value: fakeshop
+          - name: DB_PASSWORD
+            value: Pg1234
+          - name: FLASK_APP
+            value: index.py
+---
+# Deployment Fakeshop Web Service
+apiVersion: v1
+kind: Service
+metadata:
+  name: fakeshop
+spec:
+  selector:
+    app: fakeshop
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: fake-shop-port
+  type: LoadBalancer

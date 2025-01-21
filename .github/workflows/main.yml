@@ -5,31 +5,21 @@ on:
   workflow_dispatch:
 
 jobs:
-  Security_Analizy:
-    runs-on: ubuntu-latest
-    steps:
-    - uses: actions/checkout@v4
-      with:
-        fetch-depth: 0
-    - name: Set up Python
-      uses: actions/setup-python@v4
-
-    - name: Scaneando código com SonarQube
-      uses: SonarSource/sonarqube-scan-action@v4.2.1
-      with:
-        args: >
-          -Dsonar.organization=FakeShop
-          -Dsonar.projectKey=fake-shop
-      env:
-        SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
-        SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
-
   CI:
     runs-on: ubuntu-latest
-    needs: [ Security_Analizy ]
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4.2.2
+
+      - name: Análise de segurança SonarQube
+        uses: SonarSource/sonarqube-scan-action@v4.2.1
+        with:
+          args: >
+            -Dsonar.organization=FakeShop
+            -Dsonar.projectKey=fake-shop
+        env:
+          SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+          SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}
 
       - name: Autenticar no Docker Hub
         uses: docker/login-action@v3

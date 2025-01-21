@@ -17,6 +17,7 @@ jobs:
           args: >
             -Dsonar.organization=FakeShop
             -Dsonar.projectKey=fake-shop
+            -Dsonar.scm.revision=${{ github.run_number }}
         env:
           SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
           SONAR_HOST_URL: ${{ secrets.SONAR_HOST_URL }}

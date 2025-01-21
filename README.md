@@ -1,11 +1,16 @@
 # Fake Shop
 
-
+# CICD do Projeto
+![](img/cicd_project.drawio.png)
 
 ### Gerando a Imagem da Aplicação
 ```bash
-    docker build -t davidlimacd/fake-shop:v1 --push .
+    docker build -t davidlimacd/fake-shop:<github-runner-id> --push .
 ```
+
+## Provisionando Infraestrutura EKS
+
+Configuração da infraestrutura EKS [aqui](https://github.com/davidlimacardoso/eks-iac-terraform).
 
 ### Aplicar o Manifesto no k8s 
 
@@ -17,15 +22,16 @@
  ```
 
 ### Variável de Ambiente
-DB_HOST	=> Host do banco de dados PostgreSQL.
+**DB_HOST**: Host do banco de dados PostgreSQL.
 
-DB_USER => Nome do usuário do banco de dados PostgreSQL.
+**DB_USER**: Nome do usuário do banco de dados PostgreSQL.
 
-DB_PASSWORD	=> Senha do usuário do banco de dados PostgreSQL.
+**DB_PASSWORD**: Senha do usuário do banco de dados PostgreSQL.
 
-DB_NAME	=>	Nome do banco de dados PostgreSQL.
+**DB_NAME**:	Nome do banco de dados PostgreSQL.
 
-DB_PORT	=>	Porta de conexão com o banco de dados PostgreSQL.
+**DB_PORT**:	Porta de conexão com o banco de dados PostgreSQL.
+
 
 ### Criar AWS Role para Autenticação da Action Github
 1. Crie o Provedor de Identidade OIDC
@@ -112,15 +118,33 @@ aws iam attach-role-policy \
 Vá em EKS > Clusters > SEU_CLUSTER > IAM access entries > Create Access Entry. Em IAM principal  selecione a Role `GitHubActionsEKSRole` > Avançar > Selecione a policy `AmazonEKSAdminPolicy` e define em qual namespace (default) > Create.
 
 ## Prometheus
+A criação dos recursos do Prometheus fica em `k8s/monitoring_deployment.yaml`
 
 ## Grafana 
 
-1. Exibir a secret password do Grafana:
+1. A criação dos recursos do Grafana fica em k8s/monitoring_deployment.yaml
+
+2. Exibir a secret password do Grafana:
 ```bash
 kubectl get secret --namespace default grafana -o jsonpath="{.data.admin-password}" | base64 --decode ; echo
 ```
 
-2. Importar o Dashboard no diretório `./grafana/dashboard.json`
+3. Importar o Dashboard no diretório `./grafana/dashboard.json`
+
+## SonarQube
+Referências de configuração [aqui](https://github.com/tngTUDOR/pycodeq).
+
+Resultado:
+
+<div> 
+
+![](img/sonarqube_result.png)
+
+![](img/sonarqube_activity_example.png)
+
+</div>
+
+
 
 
 ## Referências
@@ -138,3 +162,5 @@ https://github.com/marketplace/actions/deploy-to-kubernetes-cluster
 https://github.com/marketplace/actions/docker-login
 
 https://github.com/marketplace/actions/build-and-push-docker-images
+
+https://github.com/tngTUDOR/pycodeq

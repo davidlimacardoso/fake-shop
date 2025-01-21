@@ -7,6 +7,8 @@ on:
 jobs:
   CI:
     runs-on: ubuntu-latest
+    if: "!contains(github.event.head_commit.message, 'doc:')"
+    
     steps:
       - name: Obter o código do projeto
         uses: actions/checkout@v4.2.2
